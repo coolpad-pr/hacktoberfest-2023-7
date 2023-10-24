@@ -1,0 +1,46 @@
+Given two strings wild and pattern where wild string may contain wild card characters and pattern string is a normal string. Determine if the two strings match. The following are the allowed wild card characters in first string :-
+
+* --> This character in string wild can be replaced by any sequence of characters, it can also be replaced by an empty string.
+? --> This character in string wild can be replaced by any one character.
+Example 1:
+
+Input: wild = ge*ks
+       pattern = geeks
+Output: Yes
+Explanation: Replace the '*' in wild string 
+with 'e' to obtain pattern "geeks".
+Example 2:
+
+Input: wild = ge?ks*
+       pattern = geeksforgeeks
+Output: Yes
+Explanation: Replace '?' and '*' in wild string with
+'e' and 'forgeeks' respectively to obtain pattern 
+"geeksforgeeks"
+
+
+def isMatch(wild, pattern):
+    m, n = len(wild), len(pattern)
+    dp = [[False] * (n + 1) for _ in range(m + 1)]
+    
+    dp[0][0] = True
+    
+    # Fill the first row
+    for j in range(1, n + 1):
+        if pattern[j - 1] == '*':
+            dp[0][j] = dp[0][j - 1]
+    
+    for i in range(1, m + 1):
+        for j in range(1, n + 1):
+            if wild[i - 1] == pattern[j - 1] or wild[i - 1] == '?':
+                dp[i][j] = dp[i - 1][j - 1]
+            elif wild[i - 1] == '*':
+                dp[i][j] = dp[i - 1][j] or dp[i][j - 1]
+    
+    return dp[m][n]
+
+# Example usage:
+wild = "ge*ks"
+pattern = "geeks"
+result = isMatch(wild, pattern)
+print("Yes" if result else "No")
